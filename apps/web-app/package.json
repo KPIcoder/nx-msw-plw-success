@@ -1,5 +1,17 @@
 {
   "name": "@nx-repo-success/web-app",
   "version": "0.0.1",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@msw/playwright": "^0.4.2",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^20.19.9",
+    "msw": "^2.11.6"
+  },
+  "scripts": {},
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }
