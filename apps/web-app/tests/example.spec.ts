@@ -1,6 +1,7 @@
 import { test as base, expect } from '@playwright/test';
 import { createNetworkFixture, NetworkFixture } from '@msw/playwright';
 import { handlers, replacedHandler } from '../src/mocks/handlers';
+import { http, HttpResponse } from 'msw';
 
 
 interface Fixtures {
@@ -18,21 +19,26 @@ test.describe('MSW Fetch Tests', () => {
     
     await page.goto('/');
         
-    await expect(page.locator('text=Name: John Doe')).toBeVisible();
-    await expect(page.locator('text=Age: 25')).toBeVisible();
-    await expect(page.locator('text=Active: Yes')).toBeVisible();
-    await expect(page.locator('text=ID: 0')).toBeVisible();
+   const button = page.locator('button[type="submit"]');
+   await button.click();
+   await expect(page.locator('text=Hello, world!')).toBeVisible();
   });
 
   test('should use replaced handler', async ({ page, network }) => {
 
-    network.use(replacedHandler);
+    network.use(
+      http.post('*/say', async ({ request }) => {
+        console.log('[MSW] say handler called - returning Hello, world!')
+        return HttpResponse.json({ sentence: 'Hello, world! from replaced handler' })
+      })
+    );
     
     await page.goto('/');
         
-    await expect(page.locator('text=Name: Bob Johnson')).toBeVisible();
-    await expect(page.locator('text=Age: 35')).toBeVisible();
-    await expect(page.locator('text=Active: No')).toBeVisible();
+    const button = page.locator('button[type="submit"]');
+    await button.click();
+    
+    await expect(page.locator('text=Hello, world! from replaced handler')).toBeVisible();
   });
 
 });

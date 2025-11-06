@@ -1,4 +1,6 @@
 import { http, HttpResponse } from 'msw'
+import { ElizaService } from "@buf/connectrpc_eliza.bufbuild_es/connectrpc/eliza/v1/eliza_pb";
+
 
 // Mock user data
 export const mockUsers = [
@@ -38,5 +40,12 @@ export const handlers = [
   http.post('http://localhost:3003/api/users', async ({ request }) => {
     console.log('[MSW] createUser handler called - returning new user')
     return HttpResponse.json({ result: { data: { id: Date.now(), name: 'New User', age: 20, isActive: true } } })
+  }),
+
+  http.post('*/say', async ({ request }) => {
+    console.log(ElizaService.methods);
+    
+    console.log('[MSW] say handler called - returning Hello, world!')
+    return HttpResponse.json({ sentence: 'Hello, world!' })
   }),
 ]
