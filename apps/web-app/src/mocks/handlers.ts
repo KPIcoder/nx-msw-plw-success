@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import { ElizaService } from "@buf/connectrpc_eliza.bufbuild_es/connectrpc/eliza/v1/eliza_pb";
+import { connect } from '../lib/msw-connect';
 
 
 // Mock user data
@@ -8,6 +9,16 @@ export const mockUsers = [
   { id: 1, name: 'Jane Smith', age: 30, isActive: true },
   { id: 2, name: 'Bob Johnson', age: 35, isActive: false },
 ]
+
+function createRpcHandler() {
+  const bff = connect.link({ baseUrl: '/grpc' })
+
+  return bff.rpc(ElizaService, 'say', async () => {
+    return {
+      sentence: 'Hello, world!'
+    }
+  })
+}
 
 export const replacedHandler = http.get('http://localhost:3003/api/getUserById', () => {
   console.log('[MSW] replacedHandler called - returning Bob Johnson')
@@ -42,10 +53,5 @@ export const handlers = [
     return HttpResponse.json({ result: { data: { id: Date.now(), name: 'New User', age: 20, isActive: true } } })
   }),
 
-  http.post('*/say', async ({ request }) => {
-    console.log(ElizaService.methods);
-    
-    console.log('[MSW] say handler called - returning Hello, world!')
-    return HttpResponse.json({ sentence: 'Hello, world!' })
-  }),
+  createRpcHandler()
 ]
