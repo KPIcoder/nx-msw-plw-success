@@ -32,7 +32,7 @@ test.describe('MSW Fetch Tests', () => {
     const button = page.locator('button[type="submit"]');
     await button.click();
     
-    await expect(page.locator('text=Hello, world! from replaced handler')).toBeVisible();
+    await expect(page.locator('text=Hello, world! from another handler')).toBeVisible();
   });
 
   test('should use http handler', async ({ page, network }) => {
@@ -44,7 +44,7 @@ test.describe('MSW Fetch Tests', () => {
     const button = page.locator('button[type="submit"]');
     await button.click();
     
-    await expect(page.locator('text=Hello, world! from replaced handler')).toBeVisible();
+    await expect(page.locator('text=Hello, world! from another handler')).toBeVisible();
   });
 
 });
