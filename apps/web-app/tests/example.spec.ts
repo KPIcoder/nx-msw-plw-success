@@ -1,6 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import { createNetworkFixture, NetworkFixture } from '@msw/playwright';
-import { handlers, replacedHandler } from '../src/mocks/handlers';
+import { handlers } from '../src/mocks/handlers';
 import { http, HttpResponse } from 'msw';
 
 

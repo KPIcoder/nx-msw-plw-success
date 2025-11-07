@@ -11,7 +11,7 @@ export const mockUsers = [
 ]
 
 function createRpcHandler() {
-  const bff = connect.link({ baseUrl: '/grpc' })
+  const bff = connect.link({ baseUrl: '*' })
 
   return bff.rpc(ElizaService, 'say', async () => {
     return {
