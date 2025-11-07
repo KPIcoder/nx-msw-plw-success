@@ -20,6 +20,22 @@ function createRpcHandler() {
   })
 }
 
+export function createAnotherRpcHandler() {
+  const bff = connect.link({ baseUrl: '*' })
+  return bff.rpc(ElizaService, 'say', async () => {
+    return {
+      sentence: 'Hello, world! from another handler'
+    }
+  })
+}
+
+export function httpMocKHandlerThatWorks() {
+  return http.post('*/say', async ({ request }) => {
+    console.log('[MSW] say handler called - returning Hello, world!')
+    return HttpResponse.json({ sentence: 'Hello, world! from another handler' })
+  })
+}
+
 export const replacedHandler = http.get('http://localhost:3003/api/getUserById', () => {
   console.log('[MSW] replacedHandler called - returning Bob Johnson')
   return HttpResponse.json({ result: {data: mockUsers[2]} })

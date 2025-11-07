@@ -1,7 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import { createNetworkFixture, NetworkFixture } from '@msw/playwright';
-import { handlers } from '../src/mocks/handlers';
-import { http, HttpResponse } from 'msw';
+import { createAnotherRpcHandler, handlers, httpMocKHandlerThatWorks } from '../src/mocks/handlers';
 
 
 interface Fixtures {
@@ -26,12 +25,19 @@ test.describe('MSW Fetch Tests', () => {
 
   test('should use replaced handler', async ({ page, network }) => {
 
-    network.use(
-      http.post('*/say', async ({ request }) => {
-        console.log('[MSW] say handler called - returning Hello, world!')
-        return HttpResponse.json({ sentence: 'Hello, world! from replaced handler' })
-      })
-    );
+    network.use(createAnotherRpcHandler());
+    
+    await page.goto('/');
+        
+    const button = page.locator('button[type="submit"]');
+    await button.click();
+    
+    await expect(page.locator('text=Hello, world! from replaced handler')).toBeVisible();
+  });
+
+  test('should use http handler', async ({ page, network }) => {
+
+    network.use(httpMocKHandlerThatWorks());
     
     await page.goto('/');
         
